@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ivy Prep — Elite College Admissions Consultant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%); }
+    .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+    .card-hover:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+    .progress-bar { transition: width 0.5s ease; }
+    .fade-in { animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .option-btn { transition: all 0.15s; }
+    .option-btn.selected { background: #4338ca; color: white; border-color: #4338ca; }
+    .option-btn:hover:not(.selected) { background: #eef2ff; border-color: #818cf8; }
+    .spinner { border: 3px solid #e0e7ff; border-top: 3px solid #4338ca; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- ── Header ──────────────────────────────────────────────────────── -->
+<header class="gradient-bg text-white py-5 px-6 shadow-lg">
+  <div class="max-w-3xl mx-auto flex items-center gap-3">
+    <span class="text-3xl">🎓</span>
+    <div>
+      <h1 class="text-xl font-bold tracking-tight">Ivy Prep</h1>
+      <p class="text-indigo-200 text-xs">Elite College Admissions Consultant · Powered by Claude</p>
+    </div>
+  </div>
+</header>
+
+<!-- ── Progress Bar ─────────────────────────────────────────────────── -->
+<div class="bg-white border-b border-slate-100">
+  <div class="max-w-3xl mx-auto px-6 py-2 flex items-center gap-4">
+    <div class="flex-1 bg-slate-100 rounded-full h-2">
+      <div id="progressBar" class="progress-bar bg-indigo-600 h-2 rounded-full" style="width:0%"></div>
+    </div>
+    <span id="stepLabel" class="text-xs text-slate-400 whitespace-nowrap">Step 1 of 4</span>
+  </div>
+</div>
+
+<!-- ── Main ─────────────────────────────────────────────────────────── -->
+<main class="max-w-3xl mx-auto px-6 py-10">
+
+  <!-- STEP 1: Choose Path -->
+  <section id="step1" class="fade-in">
+    <h2 class="text-2xl font-bold text-slate-800 mb-2">What's your goal?</h2>
+    <p class="text-slate-500 mb-8">Choose your primary focus so we can tailor your college prep strategy.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+      <button onclick="selectPath('ivy')" id="path-ivy"
+        class="path-btn card-hover border-2 border-slate-200 rounded-2xl p-7 text-left bg-white cursor-pointer group">
+        <div class="text-4xl mb-3">🏛️</div>
+        <h3 class="text-lg font-bold text-slate-800 mb-2">Get into Top Ivy Colleges</h3>
+        <p class="text-slate-500 text-sm">Targeted strategy for Harvard, Yale, Princeton, and peer schools.
+        Data-driven roadmap to maximize admission probability.</p>
+        <div class="mt-4 text-indigo-600 text-sm font-semibold group-hover:underline">Choose this →</div>
+      </button>
+
+      <button onclick="selectPath('any')" id="path-any"
+        class="path-btn card-hover border-2 border-slate-200 rounded-2xl p-7 text-left bg-white cursor-pointer group">
+        <div class="text-4xl mb-3">📚</div>
+        <h3 class="text-lg font-bold text-slate-800 mb-2">Master the Subject First</h3>
+        <p class="text-slate-500 text-sm">Deep subject mastery builds a strong foundation.
+        College recommendations follow your interests and growth.</p>
+        <div class="mt-4 text-indigo-600 text-sm font-semibold group-hover:underline">Choose this →</div>
+      </button>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-8">
+      <h3 class="font-semibold text-slate-700 mb-4">Tell us about yourself</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-slate-500 mb-1 block">Your name</label>
+          <input id="studentName" type="text" placeholder="e.g., Anika"
+            class="w-full border border-slate-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"/>
+        </div>
+        <div>
+          <label class="text-sm text-slate-500 mb-1 block">Current grade</label>
+          <select id="studentGrade"
+            class="w-full border border-slate-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
+            <option value="8">8th Grade</option>
+            <option value="9" selected>9th Grade (Freshman)</option>
+            <option value="10">10th Grade (Sophomore)</option>
+            <option value="11">11th Grade (Junior)</option>
+            <option value="12">12th Grade (Senior)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="goToQuiz()"
+      class="w-full gradient-bg text-white py-4 rounded-xl font-semibold text-lg hover:opacity-90 transition">
+      Start Assessment →
+    </button>
+  </section>
+
+  <!-- STEP 2: Quiz -->
+  <section id="step2" class="fade-in hidden">
+    <div id="quizContainer"></div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="prevQuestion()"
+        class="px-6 py-3 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition font-medium">
+        ← Back
+      </button>
+      <button onclick="nextQuestion()" id="nextBtn"
+        class="flex-1 gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-40">
+        Next Question →
+      </button>
+    </div>
+  </section>
+
+  <!-- STEP 3: Upload Documents -->
+  <section id="step3" class="fade-in hidden">
+    <h2 class="text-2xl font-bold text-slate-800 mb-2">Upload your documents</h2>
+    <p class="text-slate-500 mb-8">Optional but strongly recommended. The more context you provide,
+    the more personalized your recommendations will be.</p>
+
+    <div id="dropZone"
+      class="border-2 border-dashed border-indigo-300 rounded-2xl p-12 text-center bg-white mb-6 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition"
+      onclick="document.getElementById('fileInput').click()"
+      ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+      <div class="text-5xl mb-4">📄</div>
+      <p class="text-slate-600 font-medium mb-2">Drop files here or click to browse</p>
+      <p class="text-slate-400 text-sm">Accepts: PDF, PNG, JPG, TXT · Transcripts, awards, essays, test scores</p>
+      <input id="fileInput" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.txt" class="hidden"
+        onchange="handleFileSelect(event)"/>
+    </div>
+
+    <div id="fileList" class="mb-6 space-y-2"></div>
+
+    <div class="flex gap-3">
+      <button onclick="showStep(1)"
+        class="px-6 py-3 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition font-medium">
+        ← Back
+      </button>
+      <button onclick="uploadAndAnalyze()"
+        class="flex-1 gradient-bg text-white py-3 rounded-xl font-semibold hover:opacity-90 transition">
+        Generate My Report →
+      </button>
+    </div>
+    <p class="text-center text-slate-400 text-xs mt-3">
+      Or <button onclick="uploadAndAnalyze(true)" class="text-indigo-500 underline">skip upload and analyze now</button>
+    </p>
+  </section>
+
+  <!-- STEP 4: Results -->
+  <section id="step4" class="fade-in hidden">
+    <div id="loadingState" class="text-center py-20">
+      <div class="spinner mx-auto mb-6"></div>
+      <p class="text-slate-600 font-medium text-lg mb-2">Analyzing your profile...</p>
+      <p class="text-slate-400 text-sm">Claude is crafting your personalized Ivy League roadmap</p>
+    </div>
+    <div id="resultsContent" class="hidden"></div>
+    <div id="resultsActions" class="hidden mt-8 text-center">
+      <button onclick="restart()"
+        class="px-8 py-3 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-indigo-50 font-semibold transition">
+        Start New Assessment
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ── State ─────────────────────────────────────────────────────────────────
+  let state = {
+    path: null,
+    grade: '9',
+    name: 'Student',
+    answers: {},
+    currentQ: 0,
+    questions: [],
+    files: [],
+  };
+
+  // ── Step Navigation ───────────────────────────────────────────────────────
+  function showStep(n) {
+    ['step1','step2','step3','step4'].forEach((id, i) => {
+      document.getElementById(id).classList.toggle('hidden', i + 1 !== n);
+    });
+    const pct = [0, 25, 60, 100][n - 1];
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('stepLabel').textContent = `Step ${n} of 4`;
+  }
+
+  // ── Path Selection ────────────────────────────────────────────────────────
+  function selectPath(p) {
+    state.path = p;
+    document.querySelectorAll('.path-btn').forEach(b => {
+      b.classList.remove('border-indigo-500', 'bg-indigo-50');
+    });
+    const btn = document.getElementById('path-' + p);
+    btn.classList.add('border-indigo-500', 'bg-indigo-50');
+  }
+
+  async function goToQuiz() {
+    if (!state.path) { alert('Please choose a goal first.'); return; }
+    state.name  = document.getElementById('studentName').value || 'Student';
+    state.grade = document.getElementById('studentGrade').value;
+
+    const res = await fetch('/api/quiz');
+    const data = await res.json();
+    state.questions = data.questions;
+    state.currentQ = 0;
+    renderQuestion();
+    showStep(2);
+  }
+
+  // ── Quiz ─────────────────────────────────────────────────────────────────
+  function renderQuestion() {
+    const q = state.questions[state.currentQ];
+    const total = state.questions.length;
+    const answered = state.answers[q.id];
+
+    document.getElementById('quizContainer').innerHTML = `
+      <div class="mb-4">
+        <div class="flex justify-between text-xs text-slate-400 mb-2">
+          <span>Question ${state.currentQ + 1} of ${total}</span>
+          <span>${Math.round((state.currentQ / total) * 100)}% complete</span>
+        </div>
+        <div class="bg-slate-100 rounded-full h-1.5">
+          <div class="bg-indigo-500 h-1.5 rounded-full progress-bar"
+               style="width:${(state.currentQ / total) * 100}%"></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-7 mb-4">
+        <p class="text-lg font-semibold text-slate-800 mb-6">${q.text}</p>
+        <div class="space-y-3">
+          ${q.options.map(o => `
+            <button onclick="selectOption('${q.id}','${o.value}')"
+              class="option-btn w-full text-left border-2 border-slate-200 rounded-xl px-5 py-4 text-sm text-slate-700 font-medium ${answered === o.value ? 'selected' : ''}">
+              ${o.label}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function selectOption(qid, val) {
+    state.answers[qid] = val;
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+  }
+
+  function nextQuestion() {
+    const q = state.questions[state.currentQ];
+    if (!state.answers[q.id]) { alert('Please select an answer.'); return; }
+    if (state.currentQ < state.questions.length - 1) {
+      state.currentQ++;
+      renderQuestion();
+    } else {
+      showStep(3);
+    }
+  }
+
+  function prevQuestion() {
+    if (state.currentQ > 0) {
+      state.currentQ--;
+      renderQuestion();
+    } else {
+      showStep(1);
+    }
+  }
+
+  // ── Upload ────────────────────────────────────────────────────────────────
+  function handleFileSelect(e) { addFiles(Array.from(e.target.files)); }
+  function handleDrop(e) {
+    e.preventDefault();
+    addFiles(Array.from(e.dataTransfer.files));
+  }
+
+  function addFiles(newFiles) {
+    state.files = [...state.files, ...newFiles];
+    renderFileList();
+  }
+
+  function removeFile(i) {
+    state.files.splice(i, 1);
+    renderFileList();
+  }
+
+  function renderFileList() {
+    document.getElementById('fileList').innerHTML = state.files.map((f, i) => `
+      <div class="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div class="flex items-center gap-3">
+          <span class="text-lg">${f.name.endsWith('.pdf') ? '📄' : f.name.match(/\.(png|jpg)$/i) ? '🖼️' : '📝'}</span>
+          <div>
+            <p class="text-sm font-medium text-slate-700">${f.name}</p>
+            <p class="text-xs text-slate-400">${(f.size / 1024).toFixed(1)} KB</p>
+          </div>
+        </div>
+        <button onclick="removeFile(${i})" class="text-slate-300 hover:text-red-400 text-lg">✕</button>
+      </div>
+    `).join('');
+  }
+
+  async function uploadAndAnalyze(skipUpload = false) {
+    // Save assessment
+    await fetch('/api/assess', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ path: state.path, grade: state.grade, name: state.name, answers: state.answers }),
+    });
+
+    // Upload files
+    if (!skipUpload && state.files.length > 0) {
+      const fd = new FormData();
+      state.files.forEach(f => fd.append('files', f));
+      await fetch('/api/upload', { method: 'POST', body: fd });
+    }
+
+    showStep(4);
+    fetchAnalysis();
+  }
+
+  async function fetchAnalysis() {
+    document.getElementById('loadingState').classList.remove('hidden');
+    document.getElementById('resultsContent').classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/analyze', { method: 'POST' });
+      const data = await res.json();
+
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('resultsContent').innerHTML = `
+        <div class="mb-6 p-5 gradient-bg text-white rounded-2xl">
+          <h2 class="text-xl font-bold mb-1">🎓 ${state.name}'s College Prep Report</h2>
+          <p class="text-indigo-200 text-sm">Grade ${state.grade} · ${state.path === 'ivy' ? 'Ivy League Track' : 'Subject Mastery Track'}</p>
+        </div>
+        ${data.html}
+      `;
+      document.getElementById('resultsContent').classList.remove('hidden');
+      document.getElementById('resultsActions').classList.remove('hidden');
+    } catch (err) {
+      document.getElementById('loadingState').innerHTML = `
+        <div class="text-red-500 text-center">
+          <p class="text-4xl mb-3">⚠️</p>
+          <p class="font-semibold">Something went wrong.</p>
+          <p class="text-sm text-slate-400 mt-2">${err.message}</p>
+          <button onclick="fetchAnalysis()" class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg text-sm">Retry</button>
+        </div>`;
+    }
+  }
+
+  function restart() {
+    state = { path: null, grade: '9', name: 'Student', answers: {}, currentQ: 0, questions: [], files: [] };
+    showStep(1);
+  }
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+  showStep(1);
+</script>
+</body>
+</html>
