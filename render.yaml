@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ivy-prep-app
+    name: college-path
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app

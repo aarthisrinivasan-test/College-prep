@@ -3,5 +3,5 @@ echo "Installing dependencies..."
 pip install -r requirements.txt
 
 echo ""
-echo "Starting Ivy Prep App..."
+echo "Starting College-Path App..."
 python app.py

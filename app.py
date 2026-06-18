@@ -1,5 +1,5 @@
 """
-Ivy League College Prep App
+College-Path App
 Powered by Claude (via Docusign LLM Hub)
 """
 import os
@@ -18,7 +18,7 @@ UPLOAD_DIR = Path(__file__).parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 app = Flask(__name__)
-app.secret_key = "ivy-prep-secret-key-2026"
+app.secret_key = "college-path-secret-key-2026"
 
 client = anthropic.Anthropic(
     api_key=AUTH_TOKEN,
@@ -134,6 +134,11 @@ QUIZ_QUESTIONS = [
 
 @app.route("/")
 def index():
+    for fpath in session.get("uploads", []):
+        try:
+            Path(fpath).unlink(missing_ok=True)
+        except Exception:
+            pass
     session.clear()
     return render_template("index.html")
 
@@ -273,5 +278,5 @@ Reference real Ivy League programs, courses, and opportunities.
 
 
 if __name__ == "__main__":
-    print("\n Ivy Prep App running at http://localhost:5050\n")
+    print("\n College-Path App running at http://localhost:5050\n")
     app.run(debug=True, port=5050)
