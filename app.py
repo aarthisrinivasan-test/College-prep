@@ -12,7 +12,7 @@ import anthropic
 
 # ── Config ──────────────────────────────────────────────────────────────────
 BASE_URL   = "https://llm-hub.docusignhq.com"
-AUTH_TOKEN = "sk-cCSOahbAROLBKWb23Dtp2A"
+AUTH_TOKEN = os.environ.get("AUTH_TOKEN", "sk-cCSOahbAROLBKWb23Dtp2A")
 MODEL      = "claude-sonnet-4-6"
 UPLOAD_DIR = Path(__file__).parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
